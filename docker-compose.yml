@@ -25,3 +25,14 @@ services:
 
     ports:
       - ${KAFKA_OUTSIDE_PORT}:${KAFKA_OUTSIDE_PORT}
+
+  ingestion_service:
+    build:
+      context: ./IngestionService
+      dockerfile: Dockerfile
+    env_file:
+      - .env.stations_api
+    container_name: ingestion_service
+    depends_on:
+      kafka:
+        condition: service_healthy
