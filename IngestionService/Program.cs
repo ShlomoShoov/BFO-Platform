@@ -11,13 +11,6 @@ var builder = Host.CreateApplicationBuilder(args);
 // api
 StationsAPIs stationsAPIs = new StationsAPIs
 {
-    // StationInformationAPI = "https://gbfs.lyft.com/gbfs/2.3/bkn/en/station_information.json",
-    // StationInformationKeyPath = ["data", "stations"],
-    // StationStatusAPI = "https://gbfs.lyft.com/gbfs/2.3/bkn/en/station_status.json",
-    // StationStatusKeyPath = ["data", "stations"],
-    // VehicleTypesAPI = "https://gbfs.lyft.com/gbfs/2.3/bkn/en/vehicle_types.json",
-    // VehicleTypesKeyPath = ["data", "vehicle_types"]
-
 };
 builder.Configuration.GetSection("StationsAPIs").Bind(stationsAPIs);
 builder.Services.AddSingleton(stationsAPIs);
@@ -25,7 +18,6 @@ builder.Services.AddSingleton(stationsAPIs);
 // kafka connection
 KafkaConnectionConfiguration kafkaConnectionConfiguration = new KafkaConnectionConfiguration
 {
-    // KafkaBootStrapServes = "localhost:9095"
 };
 builder.Configuration.GetSection("KafkaConnectionConfiguration").Bind(kafkaConnectionConfiguration);
 builder.Services.AddSingleton(kafkaConnectionConfiguration);
@@ -34,9 +26,6 @@ builder.Services.AddSingleton(kafkaConnectionConfiguration);
 
 KafkaTopicsConfiguration kafkaTopicsConfiguration = new KafkaTopicsConfiguration
 {
-    // StationInformationTopicName = "bike.station-information",
-    // StationStatusTopicName = "bike.station-status",
-    // VehicleTypesTopicName = "bike.vehicle-types"
 };
 builder.Configuration.GetSection("KafkaTopicsConfiguration").Bind(kafkaTopicsConfiguration);
 builder.Services.AddSingleton(kafkaTopicsConfiguration);
@@ -45,9 +34,6 @@ builder.Services.AddSingleton(kafkaTopicsConfiguration);
 
 ServicesConfiguration servicesConfiguration = new ServicesConfiguration
 {
-    //  StationInformationServiceMinuetsTrigger = 60,
-    //  StationStatusServiceMinuetsTrigger = 1,
-    //  VehicleTypesServiceMinuetsTrigger = 60  
 };
 builder.Configuration.GetSection("ServicesConfiguration").Bind(servicesConfiguration);
 builder.Services.AddSingleton(servicesConfiguration);
