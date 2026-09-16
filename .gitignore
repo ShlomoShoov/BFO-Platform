@@ -2,3 +2,6 @@
 bin/
 obj/
 .env.stations_api
+.vscode/
+.env.kafka
+.env.ingestion_configs

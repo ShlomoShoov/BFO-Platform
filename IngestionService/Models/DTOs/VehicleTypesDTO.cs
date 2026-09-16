@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace IngestionService.Models.DTOs
 {
-    public class VehicleTypesDTO
+    public class VehicleTypesDTO:IDTO
     {
         public string VehicleTypeId { get; set; } = string.Empty;
         public string FormFactor { get; set; } = string.Empty;

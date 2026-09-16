@@ -7,7 +7,7 @@ using IngestionService.Models.Configurations;
 
 namespace IngestionService.Services
 {
-    public class KafkaService
+    public class KafkaService :IDisposable
     {
         private ILogger<KafkaService> _logger;
         public IProducer<Null, string> Producer {get;}
@@ -22,6 +22,10 @@ namespace IngestionService.Services
             Producer = new ProducerBuilder<Null, string>(configs).Build();
         }
 
-        
+        public void Dispose()
+        {
+            Producer.Flush();
+            Producer.Dispose();
+        }
     }
 }

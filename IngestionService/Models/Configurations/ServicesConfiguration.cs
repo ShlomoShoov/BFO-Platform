@@ -7,10 +7,10 @@ namespace IngestionService.Models.Configurations
 {
     public class ServicesConfiguration
     {
-        public int StationInformationServiceSecondsTrigger { get; set; }
-        public int StationStatusServiceSecondsTrigger { get; set; }
+        public int StationInformationServiceMinuetsTrigger { get; set; }
+        public int StationStatusServiceMinuetsTrigger { get; set; }
 
-        public int VehicleTypesServiceSecondsTrigger { get; set; }
+        public int VehicleTypesServiceMinuetsTrigger { get; set; }
 
     }
 }

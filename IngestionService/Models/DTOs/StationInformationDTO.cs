@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace IngestionService.Models.DTOs
 {
-    public class StationInformationDTO
+    public class StationInformationDTO : IDTO
     {
         public string StationId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
