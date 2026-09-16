@@ -41,3 +41,50 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+    healthcheck:
+      test: mysqladmin ping -h localhost -u${MYSQL_ROOT_USER} -p${MYSQL_ROOT_PASSWORD}
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 15s
+    ports: 
+      - 3306:${MYSQL_INNER_PORT}
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - 27017:${MONGO_INNER_PORT}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:${MONGO_INNER_PORT}/test --quiet
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:${REDID_INNER_PORT}
+
+    healthcheck:
+      test: redis-cli ping || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  
+
