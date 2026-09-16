@@ -31,9 +31,9 @@ services:
       context: ./IngestionService
       dockerfile: Dockerfile
     env_file:
-      - env/.env.stations_api
-      - env/.env.kafka
-      - env/.env.ingestion_configs
+      - ./env/.env.stations_api
+      - ./env/.env.kafka
+      - ./env/.env.ingestion_configs
     environment:
       - KafkaConnectionConfiguration__KafkaBootStrapServes=kafka:${KAFKA_INNER_PORT}
       

@@ -57,7 +57,6 @@ namespace IngestionService.Services
         private IEnumerable<T> _GetFromContent<T>(JsonDocument document, IEnumerable<string> KeyPath)
         {
             string content = _GetContentFromJson(document, KeyPath);
-            System.Console.WriteLine(content);
             try
             {
                 JsonSerializerOptions options = new JsonSerializerOptions
