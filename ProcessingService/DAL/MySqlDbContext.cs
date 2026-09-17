@@ -21,6 +21,7 @@ namespace ProcessingService.DAL
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<StationInformationDTO>(e=> e.HasKey(si=> si.StationId));
+            modelBuilder.Entity<VehicleTypesDTO>(e=> e.HasKey(v=> v.VehicleTypeId));
         }
     }
 }

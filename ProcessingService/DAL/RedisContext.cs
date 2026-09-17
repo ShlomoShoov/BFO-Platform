@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ProcessingService.Models.Configurations;
 using StackExchange.Redis;
@@ -13,6 +14,17 @@ namespace ProcessingService.DAL
         public RedisContext(RedisConfigs redisConfigs)
         {
             _redisConfigs = redisConfigs;
+        }
+
+        public async Task<T?> GetByKeyAsync<T>(string key)
+        {
+            string? value = await (await GetDataBaseConnectionAsync()).StringGetAsync(key);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return default;
+            }
+            T serializedValue = JsonSerializer.Deserialize<T>(value)!;
+            return serializedValue;
         }
 
         public async Task<IDatabase> GetDataBaseConnectionAsync()

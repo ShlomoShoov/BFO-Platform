@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using ProcessingService;
 using ProcessingService.DAL;
 using ProcessingService.Models.Configurations;
+using ProcessingService.Orchestrators;
+using ProcessingService.Repositories;
+using ProcessingService.Services;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -61,10 +64,11 @@ builder.Services.AddSingleton<RedisContext>();
 
 
 // services
-
+builder.Services.AddScoped<IStationsRepository, StationsRepository>();
+builder.Services.AddSingleton<IEventsConvertor, EventsConvertor>();
 
 // worker
-builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<ProcessingOrchestrator>();
 
 
 var host = builder.Build();
