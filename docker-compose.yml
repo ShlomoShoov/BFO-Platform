@@ -60,7 +60,7 @@ services:
 
       # sql connection
       - MysqlConfigs__ConnectionString=Server=mysql;Port=${MYSQL_INNER_PORT};User=${MYSQL_ROOT_USER};Password=${MYSQL_ROOT_PASSWORD};Database=${MYSQL_DATABASE_NAME}
-      
+
       # redis connection
       - RedisConfigs__ConnectionString=redis:${REDID_INNER_PORT}
 
@@ -74,6 +74,34 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  rest_api:
+    build:
+      context: ./RestApiService
+      dockerfile: Dockerfile
+
+    environment:
+      # mongo connection
+      - MongoConfiguration__ConnectionString=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:${MONGO_INNER_PORT}
+      - MongoConfiguration__DatabaseName=${MONGO_DATABASE_NAME}
+      - MongoConfiguration__StationStatusCollectionName=${STATION_STATUS_COLLECTION_NAME}
+
+      # sql connection
+      - MysqlConfigs__ConnectionString=Server=mysql;Port=${MYSQL_INNER_PORT};User=${MYSQL_ROOT_USER};Password=${MYSQL_ROOT_PASSWORD};Database=${MYSQL_DATABASE_NAME}
+
+      # redis connection
+      - RedisConfigs__ConnectionString=redis:${REDID_INNER_PORT}
+    ports:
+      - ${API_PORT}:8080
+    container_name: rest_api
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+        
 
   mysql:
     image: mysql

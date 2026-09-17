@@ -14,20 +14,20 @@ namespace ProcessingService.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "StationsInformation",
+                name: "StationStatuses",
                 columns: table => new
                 {
                     StationId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Lon = table.Column<double>(type: "double", nullable: false),
-                    Lat = table.Column<double>(type: "double", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false)
+                    NumBikesAvailable = table.Column<int>(type: "int", nullable: false),
+                    NumDocksAvailable = table.Column<int>(type: "int", nullable: false),
+                    IsRenting = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsReturning = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    LastReported = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StationsInformation", x => x.StationId);
+                    table.PrimaryKey("PK_StationStatuses", x => x.StationId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -47,6 +47,30 @@ namespace ProcessingService.Migrations
                     table.PrimaryKey("PK_VehicleTypes", x => x.VehicleTypeId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "StationsInformation",
+                columns: table => new
+                {
+                    StationId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Lon = table.Column<double>(type: "double", nullable: false),
+                    Lat = table.Column<double>(type: "double", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StationsInformation", x => x.StationId);
+                    table.ForeignKey(
+                        name: "FK_StationsInformation_StationStatuses_StationId",
+                        column: x => x.StationId,
+                        principalTable: "StationStatuses",
+                        principalColumn: "StationId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
         }
 
         /// <inheritdoc />
@@ -57,6 +81,9 @@ namespace ProcessingService.Migrations
 
             migrationBuilder.DropTable(
                 name: "VehicleTypes");
+
+            migrationBuilder.DropTable(
+                name: "StationStatuses");
         }
     }
 }

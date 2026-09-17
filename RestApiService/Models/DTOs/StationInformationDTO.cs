@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProcessingService.Models.DTOs
+namespace RestApiService.Models.DTOs
 {
     public class StationInformationDTO : IDTO
     {

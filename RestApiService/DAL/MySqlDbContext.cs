@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ProcessingService.Models.DTOs;
+using RestApiService.Models.DTOs;
 
-namespace ProcessingService.DAL
+namespace RestApiService.DAL
 {
     public class MySqlDbContext : DbContext
     {

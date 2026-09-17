@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace ProcessingService.Models.DTOs
+namespace RestApiService.Models.DTOs
 {
     public class StationStatusDTO:IDTO
     {

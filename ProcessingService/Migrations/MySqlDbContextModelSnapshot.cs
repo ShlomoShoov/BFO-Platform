@@ -41,6 +41,31 @@ namespace ProcessingService.Migrations
                     b.ToTable("StationsInformation");
                 });
 
+            modelBuilder.Entity("ProcessingService.Models.DTOs.StationStatusDTO", b =>
+                {
+                    b.Property<string>("StationId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("IsRenting")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsReturning")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<long>("LastReported")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("NumBikesAvailable")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumDocksAvailable")
+                        .HasColumnType("int");
+
+                    b.HasKey("StationId");
+
+                    b.ToTable("StationStatuses");
+                });
+
             modelBuilder.Entity("ProcessingService.Models.DTOs.VehicleTypesDTO", b =>
                 {
                     b.Property<string>("VehicleTypeId")
@@ -57,6 +82,22 @@ namespace ProcessingService.Migrations
                     b.HasKey("VehicleTypeId");
 
                     b.ToTable("VehicleTypes");
+                });
+
+            modelBuilder.Entity("ProcessingService.Models.DTOs.StationInformationDTO", b =>
+                {
+                    b.HasOne("ProcessingService.Models.DTOs.StationStatusDTO", "StationStatus")
+                        .WithOne("StationInformation")
+                        .HasForeignKey("ProcessingService.Models.DTOs.StationInformationDTO", "StationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StationStatus");
+                });
+
+            modelBuilder.Entity("ProcessingService.Models.DTOs.StationStatusDTO", b =>
+                {
+                    b.Navigation("StationInformation");
                 });
 #pragma warning restore 612, 618
         }

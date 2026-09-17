@@ -116,10 +116,29 @@ namespace ProcessingService.Repositories
                     return;
                 }
             }
-            _logger.LogInformation($"Saving new data to redis and database");
+            _logger.LogInformation($"Saving new data to redis, mongo and database");
             string statusAsJson = JsonSerializer.Serialize(stationStatus);
             await redisDataBase.StringSetAsync(redisKey, statusAsJson);
             await _mongoDbContext.StationsStatuses.InsertOneAsync(stationStatus);
+
+            // updating in sql last update
+            StationStatusDTO? existsStationStatus = await _mySqlDbContext.StationStatuses.FirstOrDefaultAsync(s=> s.StationId == stationStatus.StationId);
+            if (existsStationStatus == null)
+            {
+                _mySqlDbContext.StationStatuses.Add(stationStatus);
+            }
+            else
+            {
+                existsStationStatus.IsRenting =  stationStatus.IsRenting;
+                existsStationStatus.IsReturning = stationStatus.IsReturning;
+                existsStationStatus.LastReported = stationStatus.LastReported;
+                existsStationStatus.NumBikesAvailable = stationStatus.NumBikesAvailable;
+                existsStationStatus.NumDocksAvailable = stationStatus.NumDocksAvailable;
+            }
+            // save changes
+            await _mySqlDbContext.SaveChangesAsync();
+            
+            
 
         }
 

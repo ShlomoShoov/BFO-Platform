@@ -14,8 +14,8 @@ var builder = Host.CreateApplicationBuilder(args);
 // kafka connection
 KafkaConnectionConfiguration kafkaConnectionConfiguration = new KafkaConnectionConfiguration
 {
-    KafkaBootStrapServes = "localhost:9095",
-    ConsumerGroupId = "test-group-id"
+    // KafkaBootStrapServes = "localhost:9095",
+    // ConsumerGroupId = "test-group-id"
 };
 builder.Configuration.GetSection("KafkaConnectionConfiguration").Bind(kafkaConnectionConfiguration);
 builder.Services.AddSingleton(kafkaConnectionConfiguration);
@@ -25,9 +25,9 @@ builder.Services.AddSingleton<KafkaContext>();
 
 KafkaTopicsConfiguration kafkaTopicsConfiguration = new KafkaTopicsConfiguration
 {
-    StationInformationTopicName = "bike.station-information",
-    StationStatusTopicName = "bike.station-status",
-    VehicleTypesTopicName = "bike.vehicle-types"
+    // StationInformationTopicName = "bike.station-information",
+    // StationStatusTopicName = "bike.station-status",
+    // VehicleTypesTopicName = "bike.vehicle-types"
 };
 builder.Configuration.GetSection("KafkaTopicsConfiguration").Bind(kafkaTopicsConfiguration);
 builder.Services.AddSingleton(kafkaTopicsConfiguration);
@@ -36,7 +36,7 @@ builder.Services.AddSingleton(kafkaTopicsConfiguration);
 
 MysqlConfigs mysqlConfigs = new MysqlConfigs()
 {
-    ConnectionString = "Server=localhost;Port=3306;Password=1234;User=root;Database=gbfs-db"
+    //ConnectionString = "Server=localhost;Port=3306;Password=1234;User=root;Database=gbfs-db"
 };
 builder.Configuration.GetSection("MysqlConfigs").Bind(mysqlConfigs);
 builder.Services.AddDbContext<MySqlDbContext>(options=> options.UseMySql(mysqlConfigs.ConnectionString, ServerVersion.AutoDetect(mysqlConfigs.ConnectionString)));
@@ -45,9 +45,9 @@ builder.Services.AddDbContext<MySqlDbContext>(options=> options.UseMySql(mysqlCo
 // mongo
 MongoConfiguration mongoConfiguration = new MongoConfiguration()
 {
-    ConnectionString = "mongodb://root:1234@localhost:27017",
-    DatabaseName = "gbfs-db",
-    StationStatusCollectionName = "reports-status"
+    // ConnectionString = "mongodb://root:1234@localhost:27017",
+    // DatabaseName = "gbfs-db",
+    // StationStatusCollectionName = "reports-status"
 };
 builder.Configuration.GetSection("MongoConfiguration").Bind(mongoConfiguration);
 builder.Services.AddSingleton(mongoConfiguration);
@@ -56,7 +56,7 @@ builder.Services.AddSingleton<MongoDbContext>();
 //redis
 RedisConfigs redisConfigs = new RedisConfigs
 {
-    ConnectionString = "localhost:6379"
+    // ConnectionString = "localhost:6379"
 };
 builder.Configuration.GetSection("RedisConfigs").Bind(redisConfigs);
 builder.Services.AddSingleton(redisConfigs);
