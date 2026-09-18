@@ -25,3 +25,127 @@ services:
 
     ports:
       - ${KAFKA_OUTSIDE_PORT}:${KAFKA_OUTSIDE_PORT}
+
+  ingestion_service:
+    build:
+      context: ./IngestionService
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/.env.stations_api
+      - ./env/.env.kafka
+      - ./env/.env.ingestion_configs
+    environment:
+      - KafkaConnectionConfiguration__KafkaBootStrapServes=kafka:${KAFKA_INNER_PORT}
+      
+    container_name: ingestion_service
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  processing_service:
+    build:
+      context: ./ProcessingService
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/.env.kafka
+    environment:
+      # kafka connection
+      - KafkaConnectionConfiguration__KafkaBootStrapServes=kafka:${KAFKA_INNER_PORT}
+      - KafkaConnectionConfiguration__ConsumerGroupId=${CONSUMER_GROUP_ID}
+
+      # mongo connection
+      - MongoConfiguration__ConnectionString=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:${MONGO_INNER_PORT}
+      - MongoConfiguration__DatabaseName=${MONGO_DATABASE_NAME}
+      - MongoConfiguration__StationStatusCollectionName=${STATION_STATUS_COLLECTION_NAME}
+
+      # sql connection
+      - MysqlConfigs__ConnectionString=Server=mysql;Port=${MYSQL_INNER_PORT};User=${MYSQL_ROOT_USER};Password=${MYSQL_ROOT_PASSWORD};Database=${MYSQL_DATABASE_NAME}
+
+      # redis connection
+      - RedisConfigs__ConnectionString=redis:${REDID_INNER_PORT}
+
+    container_name: processing_service
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  rest_api:
+    build:
+      context: ./RestApiService
+      dockerfile: Dockerfile
+
+    environment:
+      # mongo connection
+      - MongoConfiguration__ConnectionString=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:${MONGO_INNER_PORT}
+      - MongoConfiguration__DatabaseName=${MONGO_DATABASE_NAME}
+      - MongoConfiguration__StationStatusCollectionName=${STATION_STATUS_COLLECTION_NAME}
+
+      # sql connection
+      - MysqlConfigs__ConnectionString=Server=mysql;Port=${MYSQL_INNER_PORT};User=${MYSQL_ROOT_USER};Password=${MYSQL_ROOT_PASSWORD};Database=${MYSQL_DATABASE_NAME}
+
+      # redis connection
+      - RedisConfigs__ConnectionString=redis:${REDID_INNER_PORT}
+    ports:
+      - ${API_PORT}:8080
+    container_name: rest_api
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+        
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+    healthcheck:
+      test: mysqladmin ping -h localhost -u${MYSQL_ROOT_USER} -p${MYSQL_ROOT_PASSWORD}
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 15s
+    ports: 
+      - 3306:${MYSQL_INNER_PORT}
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - 27017:${MONGO_INNER_PORT}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:${MONGO_INNER_PORT}/test --quiet
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:${REDID_INNER_PORT}
+
+    healthcheck:
+      test: redis-cli ping || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  
+
