@@ -26,7 +26,7 @@ namespace ProcessingService.DAL
                 e.HasKey(si=> si.StationId);
                 e.HasOne(si=> si.StationStatus)
                     .WithOne(ss=> ss.StationInformation)
-                        .HasForeignKey<StationInformationDTO>(si=> si.StationId);
+                        .HasForeignKey<StationStatusDTO>(s=> s.StationId);
                 
             }
             );

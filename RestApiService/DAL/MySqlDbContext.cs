@@ -21,13 +21,15 @@ namespace RestApiService.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<StationInformationDTO>(e=> 
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<StationInformationDTO>(e =>
             {
-                e.HasKey(si=> si.StationId);
-                e.HasOne(si=> si.StationStatus)
-                    .WithOne(ss=> ss.StationInformation)
-                        .HasForeignKey<StationInformationDTO>(si=> si.StationId);
-                
+                e.HasKey(si => si.StationId);
+                e.HasOne(si => si.StationStatus)
+                    .WithOne(ss => ss.StationInformation)
+                        .HasForeignKey<StationStatusDTO>(s => s.StationId);
+
             }
             );
             modelBuilder.Entity<StationStatusDTO>(e =>
@@ -37,7 +39,7 @@ namespace RestApiService.DAL
             }
             );
 
-            modelBuilder.Entity<VehicleTypesDTO>(e=> e.HasKey(v=> v.VehicleTypeId));
+            modelBuilder.Entity<VehicleTypesDTO>(e => e.HasKey(v => v.VehicleTypeId));
 
         }
     }

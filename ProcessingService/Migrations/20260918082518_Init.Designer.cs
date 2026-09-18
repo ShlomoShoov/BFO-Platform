@@ -10,7 +10,7 @@ using ProcessingService.DAL;
 namespace ProcessingService.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20260917080732_Init")]
+    [Migration("20260918082518_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -87,20 +87,20 @@ namespace ProcessingService.Migrations
                     b.ToTable("VehicleTypes");
                 });
 
-            modelBuilder.Entity("ProcessingService.Models.DTOs.StationInformationDTO", b =>
+            modelBuilder.Entity("ProcessingService.Models.DTOs.StationStatusDTO", b =>
                 {
-                    b.HasOne("ProcessingService.Models.DTOs.StationStatusDTO", "StationStatus")
-                        .WithOne("StationInformation")
-                        .HasForeignKey("ProcessingService.Models.DTOs.StationInformationDTO", "StationId")
+                    b.HasOne("ProcessingService.Models.DTOs.StationInformationDTO", "StationInformation")
+                        .WithOne("StationStatus")
+                        .HasForeignKey("ProcessingService.Models.DTOs.StationStatusDTO", "StationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StationStatus");
+                    b.Navigation("StationInformation");
                 });
 
-            modelBuilder.Entity("ProcessingService.Models.DTOs.StationStatusDTO", b =>
+            modelBuilder.Entity("ProcessingService.Models.DTOs.StationInformationDTO", b =>
                 {
-                    b.Navigation("StationInformation");
+                    b.Navigation("StationStatus");
                 });
 #pragma warning restore 612, 618
         }
