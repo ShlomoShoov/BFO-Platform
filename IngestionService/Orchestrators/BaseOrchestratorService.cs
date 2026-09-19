@@ -74,6 +74,7 @@ namespace IngestionService.Orchestrators
                         if (!validationResult.IsSuccess)
                         {
                             _logger.LogWarning($"Validation Failed: {validationResult.Reason}");
+                            continue;
                         }
                         string jsonDTO = JsonSerializer.Serialize(dto, dto.GetType());
                         Message<Null, string> message  = new Message<Null, string>

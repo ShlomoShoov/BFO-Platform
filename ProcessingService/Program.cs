@@ -39,7 +39,8 @@ MysqlConfigs mysqlConfigs = new MysqlConfigs()
     // ConnectionString = "Server=localhost;Port=3306;Password=1234;User=root;Database=gbfs-db"
 };
 builder.Configuration.GetSection("MysqlConfigs").Bind(mysqlConfigs);
-builder.Services.AddDbContext<MySqlDbContext>(options=> options.UseMySql(mysqlConfigs.ConnectionString, ServerVersion.AutoDetect(mysqlConfigs.ConnectionString)));
+ServerVersion serverVersion = ServerVersion.AutoDetect(mysqlConfigs.ConnectionString);
+builder.Services.AddDbContext<MySqlDbContext>(options=> options.UseMySql(mysqlConfigs.ConnectionString, serverVersion));
 
 
 // mongo

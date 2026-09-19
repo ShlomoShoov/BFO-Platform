@@ -11,6 +11,7 @@ namespace ProcessingService.DAL
     public class RedisContext
     {
         private RedisConfigs _redisConfigs;
+        private ConnectionMultiplexer? _connectionMultiplexer;
         public RedisContext(RedisConfigs redisConfigs)
         {
             _redisConfigs = redisConfigs;
@@ -29,8 +30,11 @@ namespace ProcessingService.DAL
 
         public async Task<IDatabase> GetDataBaseConnectionAsync()
         {
-            ConnectionMultiplexer connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(_redisConfigs.ConnectionString);
-            return connectionMultiplexer.GetDatabase();
+            if (_connectionMultiplexer == null)
+            {
+                _connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(_redisConfigs.ConnectionString);
+            }
+            return _connectionMultiplexer.GetDatabase();
         }
     }
 }
