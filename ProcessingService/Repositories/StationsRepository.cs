@@ -116,20 +116,19 @@ namespace ProcessingService.Repositories
                     return;
                 }
             }
+
             _logger.LogInformation($"Saving new data to redis, mongo and database");
-            string statusAsJson = JsonSerializer.Serialize(stationStatus);
-            await redisDataBase.StringSetAsync(redisKey, statusAsJson);
-            await _mongoDbContext.StationsStatuses.InsertOneAsync(stationStatus);
+            // sql saving 
 
             // updating in sql last update
-            StationStatusDTO? existsStationStatus = await _mySqlDbContext.StationStatuses.FirstOrDefaultAsync(s=> s.StationId == stationStatus.StationId);
+            StationStatusDTO? existsStationStatus = await _mySqlDbContext.StationStatuses.FirstOrDefaultAsync(s => s.StationId == stationStatus.StationId);
             if (existsStationStatus == null)
             {
                 _mySqlDbContext.StationStatuses.Add(stationStatus);
             }
             else
             {
-                existsStationStatus.IsRenting =  stationStatus.IsRenting;
+                existsStationStatus.IsRenting = stationStatus.IsRenting;
                 existsStationStatus.IsReturning = stationStatus.IsReturning;
                 existsStationStatus.LastReported = stationStatus.LastReported;
                 existsStationStatus.NumBikesAvailable = stationStatus.NumBikesAvailable;
@@ -137,6 +136,14 @@ namespace ProcessingService.Repositories
             }
             // save changes
             await _mySqlDbContext.SaveChangesAsync();
+
+            // mongo saving
+            await _mongoDbContext.StationsStatuses.InsertOneAsync(stationStatus);
+
+            // redis saving
+            string statusAsJson = JsonSerializer.Serialize(stationStatus);
+            await redisDataBase.StringSetAsync(redisKey, statusAsJson);
+
             
             
 
